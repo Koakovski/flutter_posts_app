@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:posts_app/classes/user.dart';
 import 'package:posts_app/components/show_toast.dart';
+import 'package:posts_app/screens/home_screen.dart';
 import 'package:posts_app/util/input_validators/not_empty_text_form_input_validator.dart';
 import 'package:posts_app/util/logged_user_handler.dart';
 import 'package:posts_app/util/result.dart';
@@ -21,7 +22,7 @@ class _LoginScreenState extends State<LoginScreen> {
 
   final UserService _userService = UserService();
 
-  Future<void> _loginHandler() async {
+  Future<void> _loginHandler(BuildContext context) async {
     if (_formKey.currentState == null) return;
     bool isValidated = _formKey.currentState!.validate();
     if (isValidated == false) return;
@@ -31,6 +32,12 @@ class _LoginScreenState extends State<LoginScreen> {
 
     if (result.isSuccess) {
       await LoggedUserHandler.loggin(result.data!);
+      await Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(
+          builder: (context) => const HomeScreen(),
+        ),
+      );
     } else {
       showToast(
         context,
@@ -83,7 +90,9 @@ class _LoginScreenState extends State<LoginScreen> {
                       ),
                       const SizedBox(height: 16),
                       LoginButton(
-                        onPressed: _loginHandler,
+                        onPressed: () async {
+                          await _loginHandler(context);
+                        },
                       )
                     ],
                   ),
