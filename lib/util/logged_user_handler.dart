@@ -8,7 +8,7 @@ class LoggedUserHandler {
     return SharedPreferences.getInstance();
   }
 
-  static Future<void> logginUser(User user) async {
+  static Future<void> loggin(User user) async {
     final SharedPreferences prefs = await _prefs;
     prefs.setInt(_userIdKey, user.id);
   }
@@ -20,5 +20,10 @@ class LoggedUserHandler {
 
   static Future<bool> isUserLoggedIn() async {
     return (await userId()) != null;
+  }
+
+  static Future<void> loggout() async {
+    final SharedPreferences prefs = await _prefs;
+    prefs.remove(_userIdKey);
   }
 }

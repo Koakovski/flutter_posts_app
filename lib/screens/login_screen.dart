@@ -30,7 +30,7 @@ class _LoginScreenState extends State<LoginScreen> {
     Result<User?> result = await _userService.findOneByUsername(username);
 
     if (result.isSuccess) {
-      await LoggedUserHandler.logginUser(result.data!);
+      await LoggedUserHandler.loggin(result.data!);
     } else {
       showToast(
         context,
