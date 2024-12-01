@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:posts_app/classes/user.dart';
 import 'package:posts_app/components/show_toast.dart';
 import 'package:posts_app/util/input_validators/not_empty_text_form_input_validator.dart';
+import 'package:posts_app/util/logged_user_handler.dart';
 import 'package:posts_app/util/result.dart';
 import 'package:posts_app/components/login_button.dart';
 import 'package:posts_app/components/login_input.dart';
@@ -17,9 +18,27 @@ class LoginScreen extends StatefulWidget {
 class _LoginScreenState extends State<LoginScreen> {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   final TextEditingController _usernameController = TextEditingController();
-  final TextEditingController _passwordController = TextEditingController();
 
   final UserService _userService = UserService();
+
+  Future<void> _loginHandler() async {
+    if (_formKey.currentState == null) return;
+    bool isValidated = _formKey.currentState!.validate();
+    if (isValidated == false) return;
+
+    String username = _usernameController.text.trim();
+    Result<User?> result = await _userService.findOneByUsername(username);
+
+    if (result.isSuccess) {
+      await LoggedUserHandler.logginUser(result.data!);
+    } else {
+      showToast(
+        context,
+        result.errorMessage!,
+        severity: ToastSeverity.error,
+      );
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -59,32 +78,12 @@ class _LoginScreenState extends State<LoginScreen> {
                       const SizedBox(height: 16),
                       LoginInput(
                         title: "Password",
-                        controller: _passwordController,
                         obscureText: true,
                         validators: [notEmptyTextInputValidator],
                       ),
                       const SizedBox(height: 16),
                       LoginButton(
-                        onPressed: () async {
-                          if (_formKey.currentState == null) return;
-                          bool isValidated = _formKey.currentState!.validate();
-                          if (isValidated == false) return;
-
-                          String username = _usernameController.text.trim();
-                          Result<User?> result =
-                              await _userService.findOneByUsername(username);
-
-                          if (result.isSuccess) {
-                            print(result.data!.username);
-                          } else {
-                            showToast(
-                              context,
-                              result.errorMessage!,
-                              severity: ToastSeverity.error,
-                            );
-                          }
-                          // String password = _passwordController.text.trim();
-                        },
+                        onPressed: _loginHandler,
                       )
                     ],
                   ),
