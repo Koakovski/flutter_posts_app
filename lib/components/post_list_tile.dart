@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:posts_app/classes/post.dart';
+import 'package:posts_app/screens/post_screen.dart';
 
 class PostListTile extends StatelessWidget {
   final Post post;
@@ -31,6 +32,14 @@ class PostListTile extends StatelessWidget {
           maxLines: 2,
           overflow: TextOverflow.ellipsis,
         ),
+        onTap: () async {
+          await Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => PostScreen(post: post),
+            ),
+          );
+        },
       ),
     );
   }
