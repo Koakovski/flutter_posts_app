@@ -1,16 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:posts_app/classes/user.dart';
 import 'package:posts_app/components/show_toast.dart';
-import 'package:posts_app/screens/home_screen.dart';
 import 'package:posts_app/util/input_validators/not_empty_text_form_input_validator.dart';
-import 'package:posts_app/util/logged_user_handler.dart';
 import 'package:posts_app/util/result.dart';
 import 'package:posts_app/components/login_button.dart';
 import 'package:posts_app/components/login_input.dart';
 import 'package:posts_app/service/user_service.dart';
 
 class LoginScreen extends StatefulWidget {
-  const LoginScreen({super.key});
+  final Function(int) onLogin;
+
+  const LoginScreen({super.key, required this.onLogin});
 
   @override
   State<LoginScreen> createState() => _LoginScreenState();
@@ -31,13 +31,7 @@ class _LoginScreenState extends State<LoginScreen> {
     Result<User?> result = await _userService.findOneByUsername(username);
 
     if (result.isSuccess) {
-      await LoggedUserHandler.loggin(result.data!);
-      await Navigator.pushReplacement(
-        context,
-        MaterialPageRoute(
-          builder: (context) => const HomeScreen(),
-        ),
-      );
+      widget.onLogin(result.data!.id);
     } else {
       showToast(
         context,

@@ -1,4 +1,3 @@
-import 'package:posts_app/classes/user.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class LoggedUserHandler {
@@ -8,9 +7,9 @@ class LoggedUserHandler {
     return SharedPreferences.getInstance();
   }
 
-  static Future<void> loggin(User user) async {
+  static Future<void> loggin(int userId) async {
     final SharedPreferences prefs = await _prefs;
-    prefs.setInt(_userIdKey, user.id);
+    prefs.setInt(_userIdKey, userId);
   }
 
   static Future<int?> userId() async {
