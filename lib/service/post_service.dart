@@ -16,7 +16,7 @@ class PostService {
 
   Future<Result<List<Post>>> findAllOfUser(int userId) async {
     try {
-      Uri url = PostService._urlBuilder({'userId': userId});
+      Uri url = PostService._urlBuilder({'userId': userId.toString()});
 
       var response = await http.get(url);
 
